@@ -1,6 +1,9 @@
 //Typescript class for block object
 import crypto from 'crypto';
 import bezierEasing from 'bezier-easing';
+import { WaveFile } from 'wavefile'
+import * as fs from 'fs';
+import * as path from 'path';
 
 export enum BlockType {
   regular_square,
@@ -26,7 +29,7 @@ export class Block {
   private custom_wav = '';
   private frequency = 0;
   private phase = 0;
-  private constant_amplitude = 0;
+  private constant_amplitude = -1; // default to negative 1 (-1), negative 1 implies easing is used
   private easing_offset = 0;
   private easing_points: number[] = [0, 0, 0, 0];
   private easing_scale = 0;
@@ -35,7 +38,7 @@ export class Block {
   private last_blue = 0;
   private last_violet = 0;
 
-  constructor(blockID: string) {
+  constructor() {
     this.blockID = crypto.randomUUID();
   }
 
@@ -59,6 +62,8 @@ export class Block {
     this.easing_points = easing_points;
     this.easing_scale = easing_scale;
     this.custom_wav = custom_wav;
+
+    this.renderSamples();
   }
 
   private renderSamples() {
@@ -176,7 +181,13 @@ export class Block {
           break;
       }
 
-      samples.push(sample_value * sample_amplitude);
+      if (this.constant_amplitude === -1) {
+        // if amplitude is set to -1, then the amplitude is set to the easing value
+        samples.push(sample_value * sample_amplitude);
+      } else {
+        //since amplitude is not -1, then the scale is set to constant amplitude
+        samples.push(sample_value * this.constant_amplitude);
+      }
     }
 
     return samples;
@@ -282,4 +293,16 @@ export class Block {
     }
 
     */
+  // write samples to wav file
+  public writeWav(file_name: string) {
+    const wav = new WaveFile();
+
+    // Create a mono wave file, 44.1 kHz, 32-bit and 4 samples
+    console.log(this.samples)
+    wav.fromScratch(1, this.sampleRate, '32', this.samples);
+    fs.writeFileSync(file_name, wav.toBuffer());
+
+
+  }
+
 }

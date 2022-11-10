@@ -29,7 +29,7 @@ export declare class Block {
     private last_brown;
     private last_blue;
     private last_violet;
-    constructor(blockID: string);
+    constructor();
     updateBlock(blockType: BlockType, duration: number, frequency: number, phase: number, constant_amplitude: number, easing_offset: number, easing_points: number[], easing_scale: number, custom_wav: string): void;
     private renderSamples;
     private renderwave;
@@ -39,4 +39,47 @@ export declare class Block {
     private renderNoiseBrown;
     private renderNoiseBlue;
     private renderNoiseViolet;
+    /**
+      private renderNoiseRed() {
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_red + (0.02 * white);
+        sample_value /= 1.02;
+        this.last_red = sample_value;
+        return sample_value;
+      }
+  
+      private renderNoiseGreen() {
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_green + (0.005 * white);
+        sample_value /= 1.005;
+        this.last_green = sample_value;
+        return sample_value;
+      }
+  
+      private renderNoiseYellow() {
+  
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_yellow + (0.001 * white);
+        sample_value /= 1.001;
+        this.last_yellow = sample_value;
+        return sample_value;
+  
+      }
+  
+      private renderNoiseGrey() {
+  
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_grey + (0.001 * white);
+        sample_value /= 1.001;
+        this.last_grey = sample_value;
+        return sample_value;
+  
+      }
+  
+      */
+    writeWav(file_name: string): void;
 }

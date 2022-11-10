@@ -1,20 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.doSomeStuff = void 0;
-console.log('Try npm run lint/fix!');
-const longString = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
-const trailing = 'Semicolon';
-const why = 'am I tabbed?';
-function doSomeStuff(withThis, andThat, andThose) {
-    //function on one line
-    if (!andThose.length) {
-        return false;
-    }
-    console.log(withThis);
-    console.log(andThat);
-    console.dir(andThose);
-    return;
-}
-exports.doSomeStuff = doSomeStuff;
-// TODO: more examples
+const block_1 = require("./block");
+const block = new block_1.Block();
+block.updateBlock(block_1.BlockType.irregular_noise_white, 1, 440, 0, 2147483647, 0, [0, 0, 0, 0], 0, '');
+block.writeWav('testfile.wav');
 //# sourceMappingURL=index.js.map

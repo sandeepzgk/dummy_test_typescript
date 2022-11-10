@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,6 +30,8 @@ exports.Block = exports.BlockType = void 0;
 //Typescript class for block object
 const crypto_1 = __importDefault(require("crypto"));
 const bezier_easing_1 = __importDefault(require("bezier-easing"));
+const wavefile_1 = require("wavefile");
+const fs = __importStar(require("fs"));
 var BlockType;
 (function (BlockType) {
     BlockType[BlockType["regular_square"] = 0] = "regular_square";
@@ -23,7 +48,7 @@ var BlockType;
     BlockType[BlockType["irregular_noise_violet"] = 11] = "irregular_noise_violet";
 })(BlockType = exports.BlockType || (exports.BlockType = {}));
 class Block {
-    constructor(blockID) {
+    constructor() {
         this.blockType = BlockType.regular_sine; // has to be initialized or gives a typescript error. "error TS2564: Property 'blockType' has no initializer and is not definitely assigned in the constructor."
         this.samples = [];
         this.isRegularBlock = false;
@@ -31,7 +56,7 @@ class Block {
         this.custom_wav = '';
         this.frequency = 0;
         this.phase = 0;
-        this.constant_amplitude = 0;
+        this.constant_amplitude = -1; // default to negative 1 (-1), negative 1 implies easing is used
         this.easing_offset = 0;
         this.easing_points = [0, 0, 0, 0];
         this.easing_scale = 0;
@@ -51,6 +76,7 @@ class Block {
         this.easing_points = easing_points;
         this.easing_scale = easing_scale;
         this.custom_wav = custom_wav;
+        this.renderSamples();
     }
     renderSamples() {
         switch (this.blockType) {
@@ -154,7 +180,14 @@ class Block {
                 default:
                     break;
             }
-            samples.push(sample_value * sample_amplitude);
+            if (this.constant_amplitude === -1) {
+                // if amplitude is set to -1, then the amplitude is set to the easing value
+                samples.push(sample_value * sample_amplitude);
+            }
+            else {
+                //since amplitude is not -1, then the scale is set to constant amplitude
+                samples.push(sample_value * this.constant_amplitude);
+            }
         }
         return samples;
     }
@@ -211,6 +244,56 @@ class Block {
         sample_value /= 1.001;
         this.last_violet = sample_value;
         return sample_value;
+    }
+    /**
+      private renderNoiseRed() {
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_red + (0.02 * white);
+        sample_value /= 1.02;
+        this.last_red = sample_value;
+        return sample_value;
+      }
+  
+      private renderNoiseGreen() {
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_green + (0.005 * white);
+        sample_value /= 1.005;
+        this.last_green = sample_value;
+        return sample_value;
+      }
+  
+      private renderNoiseYellow() {
+  
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_yellow + (0.001 * white);
+        sample_value /= 1.001;
+        this.last_yellow = sample_value;
+        return sample_value;
+  
+      }
+  
+      private renderNoiseGrey() {
+  
+        var sample_value: number = 0;
+        var white: number = Math.random() * 2 - 1;
+        sample_value = this.last_grey + (0.001 * white);
+        sample_value /= 1.001;
+        this.last_grey = sample_value;
+        return sample_value;
+  
+      }
+  
+      */
+    // write samples to wav file
+    writeWav(file_name) {
+        const wav = new wavefile_1.WaveFile();
+        // Create a mono wave file, 44.1 kHz, 32-bit and 4 samples
+        console.log(this.samples);
+        wav.fromScratch(1, this.sampleRate, '32', this.samples);
+        fs.writeFileSync(file_name, wav.toBuffer());
     }
 }
 exports.Block = Block;
