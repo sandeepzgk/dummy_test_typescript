@@ -106,3 +106,7 @@ dist
 # wav files
 .wav
 .wave
+
+
+#typescript build folder
+build/*

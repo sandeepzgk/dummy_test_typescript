@@ -49,9 +49,8 @@ var BlockType;
 })(BlockType = exports.BlockType || (exports.BlockType = {}));
 class Block {
     constructor() {
-        this.blockType = BlockType.regular_sine; // has to be initialized or gives a typescript error. "error TS2564: Property 'blockType' has no initializer and is not definitely assigned in the constructor."
+        this.block_type = BlockType.regular_sine; // has to be initialized or gives a typescript error. "error TS2564: Property 'blockType' has no initializer and is not definitely assigned in the constructor."
         this.samples = [];
-        this.isRegularBlock = false;
         this.duration = 0;
         this.custom_wav = '';
         this.frequency = 0;
@@ -60,14 +59,13 @@ class Block {
         this.easing_offset = 0;
         this.easing_points = [0, 0, 0, 0];
         this.easing_scale = 0;
-        this.sampleRate = 44100;
         this.last_brown = 0;
         this.last_blue = 0;
         this.last_violet = 0;
-        this.blockID = crypto_1.default.randomUUID();
+        this.block_id = crypto_1.default.randomUUID();
     }
-    updateBlock(blockType, duration, frequency, phase, constant_amplitude, easing_offset, easing_points, easing_scale, custom_wav) {
-        this.blockType = blockType;
+    updateBlock(block_type, duration, frequency, phase, constant_amplitude, easing_offset, easing_points, easing_scale, custom_wav) {
+        this.block_type = block_type;
         this.duration = duration;
         this.frequency = frequency;
         this.phase = phase;
@@ -79,7 +77,7 @@ class Block {
         this.renderSamples();
     }
     renderSamples() {
-        switch (this.blockType) {
+        switch (this.block_type) {
             case BlockType.regular_square:
                 this.samples = this.renderwave('square');
                 break;
@@ -125,7 +123,7 @@ class Block {
         const phase = this.phase;
         const amplitude = this.constant_amplitude;
         const duration = this.duration;
-        const sample_rate = this.sampleRate;
+        const sample_rate = Block.sample_rate;
         const frequency = this.frequency;
         const easing_offset = this.easing_offset;
         const easing_scale = this.easing_scale;
@@ -292,9 +290,11 @@ class Block {
         const wav = new wavefile_1.WaveFile();
         // Create a mono wave file, 44.1 kHz, 32-bit and 4 samples
         console.log(this.samples);
-        wav.fromScratch(1, this.sampleRate, '32', this.samples);
+        wav.fromScratch(1, Block.sample_rate, String(Block.bit_depth), this.samples);
         fs.writeFileSync(file_name, wav.toBuffer());
     }
 }
 exports.Block = Block;
+Block.sample_rate = 44100;
+Block.bit_depth = 32;
 //# sourceMappingURL=block.js.map

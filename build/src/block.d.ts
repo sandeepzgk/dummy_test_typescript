@@ -13,10 +13,9 @@ export declare enum BlockType {
     irregular_noise_violet = 11
 }
 export declare class Block {
-    private blockType;
-    private blockID;
+    private block_type;
+    private block_id;
     private samples;
-    private isRegularBlock;
     private duration;
     private custom_wav;
     private frequency;
@@ -25,12 +24,13 @@ export declare class Block {
     private easing_offset;
     private easing_points;
     private easing_scale;
-    private sampleRate;
+    private static readonly sample_rate;
+    private static readonly bit_depth;
     private last_brown;
     private last_blue;
     private last_violet;
     constructor();
-    updateBlock(blockType: BlockType, duration: number, frequency: number, phase: number, constant_amplitude: number, easing_offset: number, easing_points: number[], easing_scale: number, custom_wav: string): void;
+    updateBlock(block_type: BlockType, duration: number, frequency: number, phase: number, constant_amplitude: number, easing_offset: number, easing_points: number[], easing_scale: number, custom_wav: string): void;
     private renderSamples;
     private renderwave;
     private renderFunction;
