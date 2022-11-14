@@ -185,10 +185,10 @@ export class Block {
 
       if (this.constant_amplitude === -1) {
         // if amplitude is set to -1, then the amplitude is set to the easing value
-        samples.push(sample_value * sample_amplitude);
+        samples.push(sample_value * sample_amplitude * Block.max_value);
       } else {
         //since amplitude is not -1, then the scale is set to constant amplitude
-        samples.push(sample_value * this.constant_amplitude);
+        samples.push(sample_value * this.constant_amplitude * Block.max_value);
       }
     }
 
