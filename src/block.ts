@@ -1,7 +1,7 @@
 //Typescript class for block object
 import crypto from 'crypto';
 import bezierEasing from 'bezier-easing';
-import { WaveFile } from 'wavefile'
+import { WaveFile } from 'wavefile';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -33,13 +33,15 @@ export class Block {
   private easing_points: number[] = [0, 0, 0, 0];
   private easing_scale = 0;
   private static readonly sample_rate = 44100;
-  private static readonly bit_depth = 32;
+  private static readonly bit_depth: number = 32;
+  private static readonly max_value: number = 2 ** (Block.bit_depth - 1) - 1;
   private last_brown = 0;
   private last_blue = 0;
   private last_violet = 0;
 
   constructor() {
     this.block_id = crypto.randomUUID();
+    console.log(Block.max_value);
   }
 
   public updateBlock(
@@ -298,11 +300,12 @@ export class Block {
     const wav = new WaveFile();
 
     // Create a mono wave file, 44.1 kHz, 32-bit and 4 samples
-    console.log(this.samples)
-    wav.fromScratch(1, Block.sample_rate, String(Block.bit_depth), this.samples);
+    wav.fromScratch(
+      1,
+      Block.sample_rate,
+      String(Block.bit_depth),
+      this.samples
+    );
     fs.writeFileSync(file_name, wav.toBuffer());
-
-
   }
-
 }

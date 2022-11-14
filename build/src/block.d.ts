@@ -26,6 +26,7 @@ export declare class Block {
     private easing_scale;
     private static readonly sample_rate;
     private static readonly bit_depth;
+    private static readonly max_value;
     private last_brown;
     private last_blue;
     private last_violet;

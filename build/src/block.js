@@ -63,6 +63,7 @@ class Block {
         this.last_blue = 0;
         this.last_violet = 0;
         this.block_id = crypto_1.default.randomUUID();
+        console.log(Block.max_value);
     }
     updateBlock(block_type, duration, frequency, phase, constant_amplitude, easing_offset, easing_points, easing_scale, custom_wav) {
         this.block_type = block_type;
@@ -289,7 +290,6 @@ class Block {
     writeWav(file_name) {
         const wav = new wavefile_1.WaveFile();
         // Create a mono wave file, 44.1 kHz, 32-bit and 4 samples
-        console.log(this.samples);
         wav.fromScratch(1, Block.sample_rate, String(Block.bit_depth), this.samples);
         fs.writeFileSync(file_name, wav.toBuffer());
     }
@@ -297,4 +297,5 @@ class Block {
 exports.Block = Block;
 Block.sample_rate = 44100;
 Block.bit_depth = 32;
+Block.max_value = 2 ** (Block.bit_depth - 1) - 1;
 //# sourceMappingURL=block.js.map
